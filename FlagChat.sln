@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{0B2AB416-EACF-4F6A-9FEC-3228D3C30793}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{90810803-1E09-478F-8A4B-8C8E0E6A907D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra", "Infra\Infra.csproj", "{9214C8D8-796E-4888-95E2-92B285FB8916}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{8F80A8D6-8FB0-4BCF-8AA0-F21498904282}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B2AB416-EACF-4F6A-9FEC-3228D3C30793}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B2AB416-EACF-4F6A-9FEC-3228D3C30793}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B2AB416-EACF-4F6A-9FEC-3228D3C30793}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B2AB416-EACF-4F6A-9FEC-3228D3C30793}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90810803-1E09-478F-8A4B-8C8E0E6A907D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90810803-1E09-478F-8A4B-8C8E0E6A907D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90810803-1E09-478F-8A4B-8C8E0E6A907D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90810803-1E09-478F-8A4B-8C8E0E6A907D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9214C8D8-796E-4888-95E2-92B285FB8916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9214C8D8-796E-4888-95E2-92B285FB8916}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9214C8D8-796E-4888-95E2-92B285FB8916}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9214C8D8-796E-4888-95E2-92B285FB8916}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F80A8D6-8FB0-4BCF-8AA0-F21498904282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F80A8D6-8FB0-4BCF-8AA0-F21498904282}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F80A8D6-8FB0-4BCF-8AA0-F21498904282}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F80A8D6-8FB0-4BCF-8AA0-F21498904282}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+EndGlobal
