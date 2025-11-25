@@ -15,12 +15,22 @@ public class ParticipantsRepository : IParticipantsRepository
 
     public async Task<ICollection<Participants>> GetParticipants()
     {
-        return await _infraDbContext.Participants.ToListAsync();
+        return await _infraDbContext.Participants?.ToListAsync()!;
+    }
+
+    public async Task<Participants?> GetParticipant(string email)
+    {
+        if (_infraDbContext.Participants != null)
+        {
+            return await _infraDbContext.Participants.FirstOrDefaultAsync(p => p.Email == email);
+        }
+
+        return null;
     }
 
     public async Task<Participants> CreateParticipant(Participants data)
     {
-        _infraDbContext.Participants.Add(data);
+        _infraDbContext.Participants?.Add(data);
         await _infraDbContext.SaveChangesAsync();
         return data;
     }

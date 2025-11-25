@@ -30,11 +30,12 @@ public static class Auth
                     {
                         // Acessar o header Authorization
                         var authorizationHeader = context.Request.Headers["Authorization"].ToString();
-                        var accessToken = context.Request.Query["access_token"];
+                        var accessToken = context.Request.Query["access_token"].ToString();
 
                         var path = context.HttpContext.Request.Path;
                         if (path.StartsWithSegments("/chathub") && !string.IsNullOrEmpty(accessToken))
                         {
+                            // Remover o prefixo "Bearer " e obter apenas o token
                             context.Token = accessToken;
                         }
                         else

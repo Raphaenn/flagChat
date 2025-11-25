@@ -1,21 +1,59 @@
+using System.Security.Claims;
+using App.Abstractions;
 using Microsoft.AspNetCore.SignalR;
+
 
 namespace Infra.SignalRContext;
 public class SignalRConnectionHub : Hub
 {
-    private readonly InfraDbContext _infraDbContext;
+    private readonly IParticipantsRepository _participantsRepository;
+    private readonly IConnectionManager _connectionManager;
     
-    public SignalRConnectionHub(InfraDbContext infraDbContext)
+    public SignalRConnectionHub(IConnectionManager connectionManager, IParticipantsRepository participantsRepository)
     {
-        // Console.WriteLine(Context.ConnectionId);
-        _infraDbContext = infraDbContext;
+        _connectionManager = connectionManager;
+        _participantsRepository = participantsRepository;
+    }
 
+    public override Task OnConnectedAsync()
+    {
+        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Console.WriteLine(userId);
+        if (!string.IsNullOrEmpty(userId))
+        {
+            _connectionManager.AddConnection(userId, Context.ConnectionId);
+        }
+        return base.OnConnectedAsync();
     }
     
-    // levantar conn quando identificar dois usuários que sao amigos
-    public async Task SendMessage(string userName, string message)
+    public override Task OnDisconnectedAsync(Exception? exception)
     {
-        // identificar usuário logado
+        _connectionManager.RemoveConnection(Context.ConnectionId);
+        return base.OnDisconnectedAsync(exception);
+    }
+    
+    public void RegisterUser(string userId)
+    {
+        _connectionManager.AddConnection(userId, Context.ConnectionId);
+        Console.WriteLine($"User {userId} registered with connection {Context.ConnectionId}");
+    }
+
+    // levantar conn quando identificar dois usuários que sao amigos
+    public async Task SendMessageToUser(string userId, string message)
+    {
+        // Verifica se o usuário de destino existe no banco de dados
+        var targetUser = await _participantsRepository.GetParticipants();
+        if (targetUser == null)
+        {
+            throw new HubException("Usuário de destino não encontrado.");
+        }
+
+        // Recupera todas as conexões do usuário de destino
+        var connections = _connectionManager.GetConnections(userId);
+        foreach (var connectionId in connections)
+        {
+            await Clients.Client(connectionId).SendAsync("ReceiveMessage", message);
+        }
         
         // identificar usuário destino
         
@@ -28,18 +66,12 @@ public class SignalRConnectionHub : Hub
         // envia a mensage diretamente
         
         // salva todas mensagens de forma async no banco
-        
 
-        var claimsPrincipal = Context.User;
-        foreach (var claim in claimsPrincipal.Claims)
-        {
-            Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
-        }
         
         // Antes de mandar a mensagem eu quero verificar se o usuário ativo tem um registro couple com o usuário destino.
         // Caso não tenha eu retorno um erro e caso tenha eu disparo a mensagem.
         
-        await Clients.Client(userName).SendAsync("ReceiveMessage", message);
+        await Clients.Client(userId).SendAsync("ReceiveMessage", message);
 
     }
 }

@@ -6,26 +6,31 @@ namespace Infra.Repository;
 
 public class ChatRepository : IChatRepository
 {
-    private readonly IMongoCollection<Chats> _chatCollection;
+    private readonly IMongoCollection<Chat> _chatCollection;
     
     public ChatRepository(MongoDbContext chatCollection)
     {
-        this._chatCollection = chatCollection.GetCollection<Chats>("chats");
+        this._chatCollection = chatCollection.GetCollection<Chat>("chats");
     }
     
-    public async Task CreateChat(Chats data)
+    public async Task CreateChat(Chat data)
     {
         await _chatCollection.InsertOneAsync(data);
     }
 
-    public async Task<Chats> GetChatById()
+    public async Task<Chat> GetChatById()
     {
         throw new NotImplementedException();
     }
 
-    public async Task<Chats> GetChatUserId()
+    public async Task<Chat> GetChatUserId(string userId)
     {
-        throw new NotImplementedException();
+        // Filtro para verificar se o campo Participants contém o ID
+        var filter = Builders<Chat>.Filter.AnyEq(field: "Participants", userId);
+        
+        // Busca o primeiro chat que contém o usuário
+        Chat response = await _chatCollection.Find(filter).FirstOrDefaultAsync();
+        return response;
     }
 
     public async Task DeleteChat()

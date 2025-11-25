@@ -4,8 +4,8 @@ namespace App.Abstractions;
 
 public interface IChatRepository
 {
-    Task CreateChat(Chats data);
-    Task<Chats> GetChatById();
-    Task<Chats> GetChatUserId();
+    Task CreateChat(Chat data);
+    Task<Chat> GetChatById();
+    Task<Chat> GetChatUserId(string userId);
     Task DeleteChat();
 }
