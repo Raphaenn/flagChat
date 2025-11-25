@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using App.Chat.Commands;
 using Domain.Entities;
 using Infra.SignalRContext;
@@ -27,13 +28,13 @@ public class ChatEndpointDef : IEndpointsDefinitions
             
             var post = await mediator.Send(newChatCommand);
             return Results.Ok(post);
-        });
+        }).RequireAuthorization();
 
         // app.MapPost("/send", async (string text) =>
         // {
         //     var x = new SignalRConnectionHub();
         //     x.SendMessage("Raphael", text);
         //     Results.Ok();
-        // });
+        // });  
     }
 }

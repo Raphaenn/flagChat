@@ -1,14 +1,19 @@
 namespace Domain.Entities;
 public class Participants
 {
-    public string? Id { get; private set; }
-    public string? UserId { get; private set; }
-    public string? Name { get; private set; }
+    public Guid Id { get; private set; }
+    public Guid UserId { get; internal set; }
+    public string? Email { get; internal set; }
 
-    public Participants(string userId, string name)
+    private Participants(Guid userId, string email)
     {
-        Id = Guid.NewGuid().ToString();
-        UserId = userId;
-        Name = name;
+        this.Id = Guid.NewGuid();
+        this.UserId = userId;
+        this.Email = email;
+    }
+
+    public static Participants CreateParticipant(Guid userId, string email)
+    {
+        return new Participants(userId, email);
     }
 }

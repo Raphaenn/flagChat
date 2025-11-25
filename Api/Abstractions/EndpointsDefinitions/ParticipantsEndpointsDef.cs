@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using App.Users.Commands;
+using App.Participant.Commands;
 using MediatR;
 
 namespace Api.Abstractions.EndpointsDefinitions;
@@ -16,27 +16,29 @@ public class ParticipantsEndpointsDef : IEndpointsDefinitions
             Results.Ok();
         });
 
-        app.MapPost("/create", async (HttpContext httpContext, IMediator mediator, string name) =>
+        app.MapPost("/create", async (HttpContext httpContext, IMediator mediator, string email) =>
         {
-            Console.WriteLine("opa");
+            // Pegar contexto do user logado
             var user = httpContext.User;
             
-            // foreach (var claim in user.Claims)
-            // {
-            //     Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
-            // }
+            // lista as claims desse user
+            foreach (var claim in user.Claims)
+            {
+                Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+            }
             
+            // Pega a claim de name NameIdentifier
             string? userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
             // Verificar se o usuário está autenticado
-            // if (!user.Identity.IsAuthenticated)
-            // {
-            //     return Results.Unauthorized();
-            // }
+            if (!user.Identity.IsAuthenticated)
+            {
+                return Results.Unauthorized();
+            }
             
             var create = new CreateParticipant
             {
-                UserId = userId,
-                Name = name
+                Email = email
             };
             var post = await mediator.Send(create);
             return Results.Ok(post);

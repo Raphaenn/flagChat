@@ -1,14 +1,30 @@
 namespace Domain.Entities;
-public class Chats
+public class Chat
 {
-    public string Id { get; private set; }
-    public List<string> Participants { get; private set; }
+    public Guid Id { get; private set; }
+    public Guid ParticipantId1 { get; private set; }
+    public Guid ParticipantId2 { get; private set; }
+    public string Status { get; private set; }
     public DateTime CreatedAt { get; private set; }
+    
+    public Participants Participant1 { get; private set; }  // navigation
+    public Participants Participant2 { get; private set; }  // navigation
+    
+    private Chat() { } // EF
 
-    public Chats(List<string> participants, DateTime createdAt)
+    internal Chat(Guid participantId1, Guid participantId2, string status, DateTime createdAt)
     {
-        Id = Guid.NewGuid().ToString();
-        this.Participants = participants;
+        this.Id = Guid.NewGuid();
+        this.ParticipantId1 = participantId1;
+        this.ParticipantId2 = participantId2;
+        this.Status = status;
+        this.Status = status;
         this.CreatedAt = createdAt;
+    }
+
+    public static Chat CreateChat(Guid participantId1, Guid participantId2, string status, DateTime createdAt)
+    {
+        // todo - validate id pt are equals 
+        return new Chat(participantId1, participantId2, status, createdAt);
     }
 }
