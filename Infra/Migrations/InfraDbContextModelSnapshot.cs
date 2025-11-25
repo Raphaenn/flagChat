@@ -22,6 +22,68 @@ namespace Infra.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.Chats", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("Participant1Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ParticipantId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ParticipantId2")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Participant1Id");
+
+                    b.HasIndex("ParticipantId1");
+
+                    b.ToTable("chats", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Messages", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ParticipantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("ParticipantId");
+
+                    b.ToTable("messages", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Participants", b =>
                 {
                     b.Property<Guid>("Id")
@@ -33,9 +95,58 @@ namespace Infra.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.ToTable("participants", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Chats", b =>
+                {
+                    b.HasOne("Domain.Entities.Participants", "Participant1")
+                        .WithMany()
+                        .HasForeignKey("Participant1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Participants", "Participant2")
+                        .WithMany()
+                        .HasForeignKey("ParticipantId1")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Chats_Participants_ParticipantId2");
+
+                    b.Navigation("Participant1");
+
+                    b.Navigation("Participant2");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Messages", b =>
+                {
+                    b.HasOne("Domain.Entities.Chats", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Messages_Chats_ChatId");
+
+                    b.HasOne("Domain.Entities.Participants", "Participant")
+                        .WithMany()
+                        .HasForeignKey("ParticipantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Messages_Participants_ParticipantId");
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("Participant");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Chats", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

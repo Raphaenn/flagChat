@@ -5,5 +5,6 @@ namespace App.Participant.Commands;
 
 public class CreateParticipant : IRequest<Participants>
 {
-    public string? Email { get; set; }
+    public Guid UserId { get; set; }
+    public string Email { get; init; } = default!;
 }

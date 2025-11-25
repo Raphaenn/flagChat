@@ -5,6 +5,8 @@ namespace App.Chat.Commands;
 
 public class CreateChatCommand : IRequest<Chats>
 {
-    public List<string> Users { get; set; }
+    public Guid ParticipantId1 { get; set; }
+    public Guid ParticipantId2 { get; set; }
+    public string Status { get; set; } = default!;
     public DateTime CreatedAt { get; set; }
 }

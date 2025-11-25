@@ -16,7 +16,7 @@ public class CreateParticipantsQHandler : IRequestHandler<CreateParticipantQuery
 
     public async Task<Participants> Handle(CreateParticipantQuery request, CancellationToken cancellationToken)
     {
-        Participants data = Participants.CreateParticipant(request.Name);
+        Participants data = Participants.CreateParticipant(request.UserId, request.Email);
         
         return await _participantsRepository.CreateParticipant(data);
     }

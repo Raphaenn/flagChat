@@ -14,15 +14,11 @@ public class ChatEndpointDef : IEndpointsDefinitions
 
         app.MapPost("/chat/create", async (HttpContext context, IMediator mediator, string user1, string user2) =>
         {
-            List<string> parts = new List<string>
-            {
-                user1,
-                user2
-            };
-
             CreateChatCommand newChatCommand = new CreateChatCommand
             {
-                Users = parts,
+                ParticipantId1 = Guid.NewGuid(),
+                ParticipantId2 = Guid.NewGuid(),
+                Status = "active",
                 CreatedAt = DateTime.Now,
             };
             

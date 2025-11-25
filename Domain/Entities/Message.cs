@@ -1,18 +1,27 @@
 namespace Domain.Entities;
 public class Messages
 {
-    public string Id { get; private set; }
-    public string ChatId { get; set; }
-    public string UserId { get; set; }
-    public string Content { get; set; }
-    public string Timestamp { get; set; }   
+    public Guid Id { get; private set; }
+    public Guid ChatId { get; private set; }
+    public Guid ParticipantId { get; private set; }
+    public string Content { get; private set; }
+    public DateTime CreatedAt { get; private set; }   
+    public DateTime UpdatedAt { get; private set; }
     
-    public Messages(string chatId, string userId, string content, string timestamp)
+    public Participants Participant { get; private set; }
+    public Chats Chat { get; private set; }
+    
+    private Messages(Guid chatId, Guid participantId, string content, DateTime createdAt)
     {
-        this.Id = Guid.NewGuid().ToString();
+        this.Id = Guid.NewGuid();
         this.ChatId = chatId;
-        this.UserId = userId;
+        this.ParticipantId = participantId;
         this.Content = content;
-        this.Timestamp = timestamp;
+        this.CreatedAt = createdAt;
+    }
+
+    public static Messages CreateMessage(Guid chatId, Guid userId, string content, DateTime createdAt)
+    {
+        return new Messages(chatId, userId, content, createdAt);
     }
 }
