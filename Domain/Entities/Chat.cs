@@ -1,5 +1,5 @@
 namespace Domain.Entities;
-public class Chat
+public class Chats
 {
     public Guid Id { get; private set; }
     public Guid ParticipantId1 { get; private set; }
@@ -9,10 +9,11 @@ public class Chat
     
     public Participants Participant1 { get; private set; }  // navigation
     public Participants Participant2 { get; private set; }  // navigation
+    public ICollection<Messages> Messages { get; set; } = new List<Messages>();
     
-    private Chat() { } // EF
+    private Chats() { } // EF
 
-    internal Chat(Guid participantId1, Guid participantId2, string status, DateTime createdAt)
+    internal Chats(Guid participantId1, Guid participantId2, string status, DateTime createdAt)
     {
         this.Id = Guid.NewGuid();
         this.ParticipantId1 = participantId1;
@@ -22,9 +23,9 @@ public class Chat
         this.CreatedAt = createdAt;
     }
 
-    public static Chat CreateChat(Guid participantId1, Guid participantId2, string status, DateTime createdAt)
+    public static Chats CreateChat(Guid participantId1, Guid participantId2, string status, DateTime createdAt)
     {
         // todo - validate id pt are equals 
-        return new Chat(participantId1, participantId2, status, createdAt);
+        return new Chats(participantId1, participantId2, status, createdAt);
     }
 }
