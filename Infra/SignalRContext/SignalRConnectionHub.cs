@@ -19,16 +19,16 @@ public class SignalRConnectionHub : Hub
     {
         var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         Console.WriteLine(userId);
+
         if (!string.IsNullOrEmpty(userId))
-        {
             _connectionManager.AddConnection(userId, Context.ConnectionId);
-        }
+
         return base.OnConnectedAsync();
     }
     
     public override Task OnDisconnectedAsync(Exception? exception)
     {
-        _connectionManager.RemoveConnection(Context.ConnectionId);
+          _connectionManager.RemoveConnection(Context.ConnectionId);
         return base.OnDisconnectedAsync(exception);
     }
     
@@ -44,9 +44,7 @@ public class SignalRConnectionHub : Hub
         // Verifica se o usuário de destino existe no banco de dados
         var targetUser = await _participantsRepository.GetParticipants();
         if (targetUser == null)
-        {
-            throw new HubException("Usuário de destino não encontrado.");
-        }
+            throw new HubException("User not found");
 
         // Recupera todas as conexões do usuário de destino
         var connections = _connectionManager.GetConnections(userId);
@@ -67,8 +65,8 @@ public class SignalRConnectionHub : Hub
         
         // salva todas mensagens de forma async no banco
 
-        
         // Antes de mandar a mensagem eu quero verificar se o usuário ativo tem um registro couple com o usuário destino.
+        
         // Caso não tenha eu retorno um erro e caso tenha eu disparo a mensagem.
         
         await Clients.Client(userId).SendAsync("ReceiveMessage", message);

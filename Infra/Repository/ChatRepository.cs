@@ -1,4 +1,4 @@
-using App.Abstractions;
+using Domain.Interface;
 using Domain.Entities;
 using MongoDB.Driver;
 
@@ -34,6 +34,21 @@ public class ChatRepository : IChatRepository
     }
 
     public async Task DeleteChat()
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Chats> StartChat(Chats chat, CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Chats?> SearchChatByParticipants(Guid userId1, Guid userId2, CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Chats?> GetByIdAsync(Guid chatId, CancellationToken ct = default)
     {
         throw new NotImplementedException();
     }

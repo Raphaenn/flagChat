@@ -11,15 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configurar JWT e SignalR usando a extensão
 builder.Services.AddJwtAuthentication(secretKey);
-
-builder.Services.RegisterServices();
-builder.Services.AddSignalR();
-
-builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDB"));
-builder.Services.AddSingleton<MongoDbContext>();
-
-builder.Services.AddDbContext<InfraDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.RegisterServices(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApiDocument(config =>
