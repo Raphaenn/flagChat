@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
-string secretKey = "esta-e-uma-chave-secreta-de-32-bits";
+string secretKey = "XKeYqViwIeC7D5rLdmtVeae751wgTrPYFcrGfTfhL0DIzHaTtvAFZK6HuHduBpjm";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +61,9 @@ if (app.Environment.IsDevelopment())
 }
 
 // builder.Services.AddSignalRWithJwt();
+app.UseAuthentication();
+app.UseAuthorization();
+// app.UseRouting(); -- o que é ?
 
 app.UseHttpsRedirection();
 

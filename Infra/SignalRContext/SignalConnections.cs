@@ -13,7 +13,6 @@ public class SignalConnections : IConnectionManager
 
     public void AddConnection(string userId, string connectionId)
     {
-        // O uso do lock no método AddConnection é para garantir segurança em multithreading.
         lock (_connections)
         {
             if (!_connections.TryGetValue(userId, out var connectionIds))
@@ -21,6 +20,7 @@ public class SignalConnections : IConnectionManager
                 connectionIds = new HashSet<string>();
                 _connections[userId] = connectionIds;
             }
+
             connectionIds.Add(connectionId);
         }
     }
@@ -29,19 +29,32 @@ public class SignalConnections : IConnectionManager
     {
         lock (_connections)
         {
-            foreach (var connections in _connections.Values)
+            string? userToRemove = null;
+
+            foreach (var kvp in _connections)
             {
-                connections.Remove(connectionId);
+                if (kvp.Value.Remove(connectionId))
+                {
+                    if (kvp.Value.Count == 0)
+                        userToRemove = kvp.Key;
+
+                    break;
+                }
             }
+
+            if (userToRemove is not null)
+                _connections.Remove(userToRemove);
         }
     }
 
     public IEnumerable<string> GetConnections(string userId)
     {
-        if (_connections.TryGetValue(userId, out var connectionIds))
+        lock (_connections)
         {
-            return connectionIds;
+            if (_connections.TryGetValue(userId, out var connectionIds))
+                return connectionIds.ToList(); // <-- evita expor referência interna
+            
+            return Enumerable.Empty<string>();
         }
-        return Enumerable.Empty<string>();
     }
 }

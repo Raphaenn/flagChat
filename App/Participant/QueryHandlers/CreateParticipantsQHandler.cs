@@ -1,15 +1,15 @@
-using App.Abstractions;
 using App.Users.Queries;
 using Domain.Entities;
+using Domain.Interface;
 using MediatR;
 
 namespace App.Users.QueryHandlers;
 
 public class CreateParticipantsQHandler : IRequestHandler<CreateParticipantQuery, Participants>
 {
-    private readonly IParticipantsRepository _participantsRepository;
+    private readonly IParticipantRepository _participantsRepository;
 
-    public CreateParticipantsQHandler(IParticipantsRepository participantsRepository)
+    public CreateParticipantsQHandler(IParticipantRepository participantsRepository)
     {
         _participantsRepository = participantsRepository;
     }
@@ -18,6 +18,6 @@ public class CreateParticipantsQHandler : IRequestHandler<CreateParticipantQuery
     {
         Participants data = Participants.CreateParticipant(request.UserId, request.Email);
         
-        return await _participantsRepository.CreateParticipant(data);
+        return await _participantsRepository.CreateParticipant(data, cancellationToken);
     }
 }

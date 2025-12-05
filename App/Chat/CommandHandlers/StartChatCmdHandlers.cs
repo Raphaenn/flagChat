@@ -34,7 +34,12 @@ public class StartChatCmdHandlers : IRequestHandler<StartChatCommand, Chats>
         if (search.Status == "blocked")
             throw new ApplicationException("Invalid chat status");
         
-        Chats chat = Chats.StartChat(request.CurrentUserId, request.TargetUserId, "active", request.UpdatedAt);
+        Chats chat = Chats.StartChat(
+            request.CurrentUserId, 
+            request.TargetUserId, 
+            "active", 
+            request.UpdatedAt);
+        
         await _chatRepository.StartChat(chat, cancellationToken);
         
         return chat;

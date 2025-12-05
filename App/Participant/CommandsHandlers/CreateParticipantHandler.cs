@@ -1,15 +1,15 @@
-using App.Abstractions;
 using App.Participant.Commands;
 using Domain.Entities;
+using Domain.Interface;
 using MediatR;
 
-namespace App.Users.CommandsHandlers;
+namespace App.Participant.CommandsHandlers;
 
 public class CreateParticipantHandler : IRequestHandler<CreateParticipant, Participants>
 {
-    private readonly IParticipantsRepository _participantsRepository;
+    private readonly IParticipantRepository _participantsRepository;
 
-    public CreateParticipantHandler(IParticipantsRepository participantsRepository)
+    public CreateParticipantHandler(IParticipantRepository participantsRepository)
     {
         _participantsRepository = participantsRepository;
     }
@@ -17,6 +17,6 @@ public class CreateParticipantHandler : IRequestHandler<CreateParticipant, Parti
     public async Task<Participants> Handle(CreateParticipant request, CancellationToken cancellationToken)
     {
         Participants data = Participants.CreateParticipant(request.UserId, request.Email);
-        return await _participantsRepository.CreateParticipant(data);
+        return await _participantsRepository.CreateParticipant(data, cancellationToken);
     }
 }

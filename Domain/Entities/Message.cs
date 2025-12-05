@@ -7,7 +7,6 @@ public class Messages
     public string Content { get; private set; }
     public DateTime SentAt { get; private set; }
 
-    
     public Participants? Participant { get; private set; }
     public Chats? Chat { get; private set; }
     

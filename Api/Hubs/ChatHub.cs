@@ -28,6 +28,7 @@ public class ChatHub : Hub
     private Guid GetCurrentUserId()
     {
         var sub = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Console.WriteLine(sub);
         if (string.IsNullOrWhiteSpace(sub))
             throw new HubException("User not found.");
 
@@ -61,7 +62,7 @@ public class ChatHub : Hub
         await Groups.AddToGroupAsync(Context.ConnectionId, chat.Id.ToString());
 
         // 3. Devolve o histórico para o caller
-        await Clients.Caller.SendAsync("ChatLoaded", chat.Id, chat.LastMessages);
+        // await Clients.Caller.SendAsync("ChatLoaded", chat.Id, chat.LastMessages);
     }
 
     /// <summary>
@@ -73,10 +74,10 @@ public class ChatHub : Hub
         var chatGuid = Guid.Parse(chatId);
 
         // 1. Salva e valida pelo serviço
-        var messageDto = await _chatService.SendMessageAsync(chatGuid, currentUserId, text);
+        // var messageDto = await _chatService.SendMessageAsync(chatGuid, currentUserId, text);
 
         // 2. Broadcast da mensagem para todo mundo no grupo (no máximo 2 pessoas)
-        await Clients.Group(chatId).SendAsync("ReceiveMessage", messageDto);
+        // await Clients.Group(chatId).SendAsync("ReceiveMessage", messageDto);
     }
 
 }

@@ -1,10 +1,10 @@
-using App.Abstractions;
 using Domain.Entities;
+using Domain.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Repository;
 
-public class ParticipantsRepository : IParticipantsRepository
+public class ParticipantsRepository : IParticipantRepository
 {
     private readonly InfraDbContext _infraDbContext;
 
@@ -28,14 +28,24 @@ public class ParticipantsRepository : IParticipantsRepository
         return null;
     }
 
-    public async Task<Participants> CreateParticipant(Participants data)
+    public async Task<Participants> DeleteParticipant()
     {
-        _infraDbContext.Participants?.Add(data);
-        await _infraDbContext.SaveChangesAsync();
-        return data;
+        throw new NotImplementedException();
     }
 
-    public async Task<Participants> DeleteParticipant()
+    public async Task<Participants> CreateParticipant(Participants participant, CancellationToken ct)
+    {
+        _infraDbContext.Participants?.Add(participant);
+        await _infraDbContext.SaveChangesAsync(ct);
+        return participant;
+    }
+
+    public async Task<List<Participants>> GetParticipants(Guid userId)
+    {
+        return await _infraDbContext.Participants?.ToListAsync()!;
+    }
+
+    public async Task<bool> ExistsParticipantsAsync(Guid userId, CancellationToken ct)
     {
         throw new NotImplementedException();
     }

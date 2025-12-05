@@ -67,7 +67,7 @@ public class InfraDbContext : DbContext
 
             message.HasKey(m => m.Id);
             message.Property(m => m.ChatId).IsRequired();
-            message.Property(m => m.ParticipantId).IsRequired();
+            message.Property(m => m.SenderId).IsRequired();
 
             message.HasOne(m => m.Chat)
                 .WithMany(c => c.MessagesList)
@@ -77,7 +77,7 @@ public class InfraDbContext : DbContext
             
             message.HasOne(m => m.Participant)
                 .WithMany()
-                .HasForeignKey(m => m.ParticipantId)
+                .HasForeignKey(m => m.ChatId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Messages_Participants_ParticipantId");
         });

@@ -10,7 +10,7 @@ public class ChatEndpointDef : IEndpointsDefinitions
 {
     public void RegisterEndpoints(WebApplication app)
     {
-        app.MapHub<SignalRConnectionHub>("/chatHub").RequireAuthorization();
+        app.MapHub<SignalRConnectionHub>("/chathub").RequireAuthorization();
 
         app.MapPost("/chat/create", async (HttpContext context, IMediator mediator, string user1, string user2) =>
         {

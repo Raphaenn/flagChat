@@ -2,6 +2,7 @@ using App.Chat.Commands;
 using Domain.Interface;
 using Infra;
 using Infra.Repository;
+using Infra.SignalRContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Extensions;
@@ -19,7 +20,9 @@ public static class MinimalApiExtensions
         serviceCollection.AddSignalR();
         serviceCollection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateChatCommand).Assembly));
 
-        // serviceCollection.AddScoped<IParticipantsRepository, ParticipantsRepository>();
+        serviceCollection.AddSingleton<IConnectionManager, SignalConnections>();
+        serviceCollection.AddScoped<IParticipantRepository, ParticipantsRepository>();
+        serviceCollection.AddScoped<IChatMessageRepository, ChatMessageRepository>();
         serviceCollection.AddScoped<IChatRepository, ChatRepository>();
 
         return serviceCollection;
