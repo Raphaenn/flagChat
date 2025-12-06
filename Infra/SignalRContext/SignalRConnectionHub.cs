@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Domain.Entities;
 using Domain.Interface;
 using Microsoft.AspNetCore.SignalR;
 
@@ -41,11 +42,12 @@ public class SignalRConnectionHub : Hub
     // levantar conn quando identificar dois usuários que sao amigos
     public async Task SendMessageToUser(string userId, string message)
     {
-        Guid parsedUserId = Guid.Parse(userId);
-        // Verifica se o usuário de destino existe no banco de dados
-        var targetUser = await _participantsRepository.GetParticipants(parsedUserId);
-        if (targetUser == null)
-            throw new HubException("User not found");
+        // Guid parsedUserId = Guid.Parse(userId);
+        
+        // todo - Verifica se o usuário de destino existe no banco de dados
+        // List<Participants> targetUser = await _participantsRepository.GetParticipants(parsedUserId);
+        // if (targetUser == null)
+        //     throw new HubException("User not found");
 
         // Recupera todas as conexões do usuário de destino
         var connections = _connectionManager.GetConnections(userId);
@@ -70,7 +72,7 @@ public class SignalRConnectionHub : Hub
         
         // Caso não tenha eu retorno um erro e caso tenha eu disparo a mensagem.
         
-        await Clients.Client(userId).SendAsync("ReceiveMessage", message);
+        // await Clients.Client(userId).SendAsync("ReceiveMessage", message);
 
     }
 }
