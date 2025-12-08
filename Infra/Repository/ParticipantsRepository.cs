@@ -13,7 +13,7 @@ public class ParticipantsRepository : IParticipantRepository
         this._infraDbContext = infraDbContext;
     }
 
-    public async Task<ICollection<Participants>> GetParticipants()
+    public async Task<List<Participants>> GetParticipants(Guid userId, CancellationToken ct)
     {
         return await _infraDbContext.Participants?.ToListAsync()!;
     }

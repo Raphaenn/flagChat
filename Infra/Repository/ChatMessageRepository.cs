@@ -5,10 +5,17 @@ namespace Infra.Repository;
 
 public class ChatMessageRepository : IChatMessageRepository
 {
+    private readonly InfraDbContext _infraDbContext;
 
-    public async Task<Messages> AddAsync(Messages message, CancellationToken ct = default)
+    public ChatMessageRepository(InfraDbContext infraDbContext)
     {
-        throw new NotImplementedException();
+        this._infraDbContext = infraDbContext;
+    }
+
+    public void SaveMessage(Messages message)
+    {
+        _infraDbContext.Message?.Add(message);
+        _infraDbContext.SaveChanges();
     }
 
     public async Task<List<Messages>> GetLastMessagesAsync(Guid chatId, int limit, CancellationToken ct = default)

@@ -4,7 +4,7 @@ namespace Domain.Interface;
 
 public interface IChatRepository
 {
-    Task<Chats> StartChat(Chats chat, CancellationToken ct);
+    Task StartChat(Chats chat, CancellationToken ct);
     Task<Chats?> SearchChatByParticipants(Guid userId1, Guid userId2, CancellationToken ct);
     Task<Chats?> GetByIdAsync(Guid chatId, CancellationToken ct = default);
 

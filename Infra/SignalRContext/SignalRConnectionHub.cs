@@ -1,29 +1,38 @@
 using System.Security.Claims;
 using Domain.Entities;
 using Domain.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
-
 namespace Infra.SignalRContext;
+
+[Authorize]
 public class SignalRConnectionHub : Hub
 {
     private readonly IParticipantRepository _participantsRepository;
+    private readonly IChatRepository _chatRepository;
+    private readonly IChatMessageRepository _chatMessageRepository;
     private readonly IConnectionManager _connectionManager;
     
-    public SignalRConnectionHub(IConnectionManager connectionManager, IParticipantRepository participantsRepository)
+    public SignalRConnectionHub(
+        IConnectionManager connectionManager, 
+        IParticipantRepository participantsRepository, 
+        IChatRepository chatRepository, 
+        IChatMessageRepository chatMessageRepository
+        )
     {
         _connectionManager = connectionManager;
         _participantsRepository = participantsRepository;
+        _chatRepository = chatRepository;
+        _chatMessageRepository = chatMessageRepository;
     }
 
     public override Task OnConnectedAsync()
-    {
+    {   
         var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        Console.WriteLine(userId);
-
         if (!string.IsNullOrEmpty(userId))
             _connectionManager.AddConnection(userId, Context.ConnectionId);
-
+        
         return base.OnConnectedAsync();
     }
     
@@ -39,40 +48,39 @@ public class SignalRConnectionHub : Hub
         Console.WriteLine($"User {userId} registered with connection {Context.ConnectionId}");
     }
 
-    // levantar conn quando identificar dois usuários que sao amigos
-    public async Task SendMessageToUser(string userId, string message)
+    public async Task SendMessageToUser(string targetId, string message, CancellationToken cancellationToken)
     {
-        // Guid parsedUserId = Guid.Parse(userId);
-        
-        // todo - Verifica se o usuário de destino existe no banco de dados
-        // List<Participants> targetUser = await _participantsRepository.GetParticipants(parsedUserId);
-        // if (targetUser == null)
-        //     throw new HubException("User not found");
+        string? senderId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        // Recupera todas as conexões do usuário de destino
-        var connections = _connectionManager.GetConnections(userId);
+        if (string.IsNullOrWhiteSpace(senderId))
+            throw new HubException("Unauthorized");
+
+        if (!Guid.TryParse(senderId, out var senderGuid))
+            throw new HubException("Invalid sender id");
+
+        if (!Guid.TryParse(targetId, out var targetGuid))
+            throw new HubException("Invalid target id");
+        
+        // 1) Check is an participants chat exists (Created when the users became friends.)
+        Chats? chat = await _chatRepository.SearchChatByParticipants(senderGuid, targetGuid, cancellationToken);
+        if(chat == null)
+            throw new HubException("Invalid chat participants");
+        
+        // 2) check if destination user exists
+        var targetUser = await _participantsRepository.GetParticipants(targetGuid, cancellationToken);
+        if (targetUser == null)
+            throw new HubException("User not found");
+
+        // 3) Recovery all destination user connections (An user can be multiples connections)
+        var connections = _connectionManager.GetConnections(targetId);
+
+        // Save async message on db
+        Messages msg = Messages.CreateMessage(chat.Id, senderGuid, message, DateTime.Now);
+        _chatMessageRepository.SaveMessage(msg);
+        
         foreach (var connectionId in connections)
         {
-            await Clients.Client(connectionId).SendAsync("ReceiveMessage", message);
+            await Clients.Client(connectionId).SendAsync("ReceiveMessage", message, cancellationToken: cancellationToken);
         }
-        
-        // identificar usuário destino
-        
-        // verificar se já existe um chat entre eles
-        
-        // caso exista carrega o chat existente
-        
-        // caso não exista, crei um novo
-        
-        // envia a mensage diretamente
-        
-        // salva todas mensagens de forma async no banco
-
-        // Antes de mandar a mensagem eu quero verificar se o usuário ativo tem um registro couple com o usuário destino.
-        
-        // Caso não tenha eu retorno um erro e caso tenha eu disparo a mensagem.
-        
-        // await Clients.Client(userId).SendAsync("ReceiveMessage", message);
-
     }
 }
