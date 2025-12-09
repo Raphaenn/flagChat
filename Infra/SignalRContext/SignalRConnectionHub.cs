@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using App.Interfaces.IQueueService;
 using Domain.Entities;
 using Domain.Interface;
 using Microsoft.AspNetCore.Authorization;
@@ -13,18 +14,21 @@ public class SignalRConnectionHub : Hub
     private readonly IChatRepository _chatRepository;
     private readonly IChatMessageRepository _chatMessageRepository;
     private readonly IConnectionManager _connectionManager;
+    private readonly IBackgroundTaskQueue _backgroundTaskQueue;
     
     public SignalRConnectionHub(
         IConnectionManager connectionManager, 
         IParticipantRepository participantsRepository, 
         IChatRepository chatRepository, 
-        IChatMessageRepository chatMessageRepository
+        IChatMessageRepository chatMessageRepository,
+        IBackgroundTaskQueue backgroundTaskQueue
         )
     {
         _connectionManager = connectionManager;
         _participantsRepository = participantsRepository;
         _chatRepository = chatRepository;
         _chatMessageRepository = chatMessageRepository;
+        _backgroundTaskQueue = backgroundTaskQueue;
     }
 
     public override Task OnConnectedAsync()
@@ -75,8 +79,19 @@ public class SignalRConnectionHub : Hub
         var connections = _connectionManager.GetConnections(targetId);
 
         // Save async message on db
-        Messages msg = Messages.CreateMessage(chat.Id, senderGuid, message, DateTime.Now);
-        _chatMessageRepository.SaveMessage(msg);
+        await _backgroundTaskQueue.QueueBackgroundWorkItemAsync(async ct =>
+        {
+            try
+            {
+                Messages msg = Messages.CreateMessage(chat.Id, senderGuid, message, DateTime.Now);
+                await _chatMessageRepository.SaveMessageAsync(msg, ct);
+            }
+            catch (Exception ex)
+            {
+                // logar se quiser, sem quebrar a conexão do SignalR
+                Console.WriteLine($"Erro ao salvar mensagem em background: {ex}");
+            }
+        });
         
         foreach (var connectionId in connections)
         {

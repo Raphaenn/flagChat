@@ -36,7 +36,6 @@ public static class Auth
                     ValidateLifetime = false,
                     // ClockSkew = TimeSpan.FromMinutes(5)
                 };
-
                 
                 // ESSENCIAL PRO SIGNALR VIA ?access_token=
                 options.Events = new JwtBearerEvents

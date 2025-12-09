@@ -1,7 +1,10 @@
 using App.Chat.Commands;
+using App.Interfaces.IQueueService;
 using Domain.Interface;
 using Infra;
+using Infra.HostedServices;
 using Infra.Repository;
+using Infra.Services;
 using Infra.SignalRContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +16,8 @@ public static class MinimalApiExtensions
     {
         serviceCollection.Configure<MongoDbSettings>(configuration.GetSection("MongoDB"));
         serviceCollection.AddSingleton<MongoDbContext>();
+        serviceCollection.AddSingleton<IBackgroundTaskQueue, DefaultBackgroundTaskQueue>();
+        serviceCollection.AddHostedService<BackgroundWorkerService>();
 
         serviceCollection.AddDbContext<InfraDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));

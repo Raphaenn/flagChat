@@ -12,10 +12,10 @@ public class ChatMessageRepository : IChatMessageRepository
         this._infraDbContext = infraDbContext;
     }
 
-    public void SaveMessage(Messages message)
+    public async Task SaveMessageAsync(Messages message, CancellationToken ct)
     {
         _infraDbContext.Message?.Add(message);
-        _infraDbContext.SaveChanges();
+        await _infraDbContext.SaveChangesAsync(ct);
     }
 
     public async Task<List<Messages>> GetLastMessagesAsync(Guid chatId, int limit, CancellationToken ct = default)
