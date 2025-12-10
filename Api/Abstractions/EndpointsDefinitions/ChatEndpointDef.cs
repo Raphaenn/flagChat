@@ -1,7 +1,6 @@
 using System.Security.Claims;
+using Api.Hubs;
 using App.Chat.Commands;
-using Domain.Entities;
-using Infra.SignalRContext;
 using MediatR;
 
 namespace Api.Abstractions.EndpointsDefinitions;

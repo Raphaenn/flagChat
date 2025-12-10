@@ -1,11 +1,6 @@
-namespace Infra.SignalRContext;
+using App.Interfaces.Chat;
 
-public interface IConnectionManager
-{
-    void AddConnection(string userId, string connectionId);
-    void RemoveConnection(string connectionId);
-    IEnumerable<string> GetConnections(string userId);
-}
+namespace Infra.SignalRContext;
 
 public class SignalConnections : IConnectionManager
 {
