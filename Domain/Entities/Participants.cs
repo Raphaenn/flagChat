@@ -5,6 +5,8 @@ public class Participants
     public Guid UserId { get; internal set; }
     public string? Email { get; internal set; }
 
+    protected Participants() {}
+    
     private Participants(Guid userId, string email)
     {
         this.Id = Guid.NewGuid();

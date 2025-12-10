@@ -6,7 +6,9 @@ namespace Infra.Services;
 public class DefaultBackgroundTaskQueue : IBackgroundTaskQueue
 {
     private readonly Channel<Func<CancellationToken, ValueTask>> _queue;
-
+    
+    public DefaultBackgroundTaskQueue() : this(100) { }
+    
     public DefaultBackgroundTaskQueue(int capacity = 100)
     {
         var options = new BoundedChannelOptions(capacity)

@@ -13,9 +13,9 @@ public class Chats
     public Participants? Participant2 { get; private set; }  // navigation
     
     private readonly List<Messages> _messagesList = new List<Messages>();
-    public ReadOnlyCollection<Messages> MessagesList => _messagesList.AsReadOnly();
+    public IReadOnlyCollection<Messages> MessagesList => _messagesList.AsReadOnly();
     
-    // private Chats() { } // EF
+    protected Chats() {}
 
     internal Chats(Guid participantId1, Guid participantId2, string status, DateTime createdAt)
     {

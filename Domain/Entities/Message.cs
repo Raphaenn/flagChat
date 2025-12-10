@@ -10,11 +10,13 @@ public class Messages
     public Participants? Participant { get; private set; }
     public Chats? Chat { get; private set; }
     
-    private Messages(Guid chatId, Guid participantId, string content, DateTime sentAt)
+    protected Messages() {}
+    
+    private Messages(Guid chatId, Guid senderId, string content, DateTime sentAt)
     {
         this.Id = Guid.NewGuid();
         this.ChatId = chatId;
-        this.SenderId = participantId;
+        this.SenderId = senderId;
         this.Content = content;
         this.SentAt = sentAt;
     }

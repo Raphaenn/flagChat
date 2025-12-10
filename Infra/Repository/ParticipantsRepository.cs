@@ -13,9 +13,15 @@ public class ParticipantsRepository : IParticipantRepository
         this._infraDbContext = infraDbContext;
     }
 
-    public async Task<List<Participants>> GetParticipants(Guid userId, CancellationToken ct)
+    public async Task<Participants?> GetParticipants(Guid userId, CancellationToken ct)
     {
-        return await _infraDbContext.Participants?.ToListAsync()!;
+        if (_infraDbContext?.Participants != null)
+        {
+            return await _infraDbContext?.Participants
+                .FirstOrDefaultAsync(p => p.UserId == userId, ct)!;
+        }
+
+        return null;
     }
 
     public async Task<Participants?> GetParticipant(string email)

@@ -56,7 +56,7 @@ public class InfraDbContext : DbContext
             
             chat.HasOne(c => c.Participant2)
                 .WithMany()
-                .HasForeignKey(c => c.ParticipantId1)
+                .HasForeignKey(c => c.ParticipantId2)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Chats_Participants_ParticipantId2");
         });
@@ -77,9 +77,9 @@ public class InfraDbContext : DbContext
             
             message.HasOne(m => m.Participant)
                 .WithMany()
-                .HasForeignKey(m => m.ChatId)
+                .HasForeignKey(m => m.SenderId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Messages_Participants_ParticipantId");
+                .HasConstraintName("FK_Messages_Participants_SenderId");
         });
 
     }

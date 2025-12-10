@@ -31,9 +31,6 @@ namespace Infra.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("Participant1Id")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("ParticipantId1")
                         .HasColumnType("uuid");
 
@@ -46,9 +43,9 @@ namespace Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Participant1Id");
-
                     b.HasIndex("ParticipantId1");
+
+                    b.HasIndex("ParticipantId2");
 
                     b.ToTable("chats", (string)null);
                 });
@@ -66,20 +63,17 @@ namespace Infra.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("ParticipantId")
+                    b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime>("SentAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChatId");
 
-                    b.HasIndex("ParticipantId");
+                    b.HasIndex("SenderId");
 
                     b.ToTable("messages", (string)null);
                 });
@@ -107,13 +101,14 @@ namespace Infra.Migrations
                 {
                     b.HasOne("Domain.Entities.Participants", "Participant1")
                         .WithMany()
-                        .HasForeignKey("Participant1Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ParticipantId1")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired()
+                        .HasConstraintName("FK_Chats_Participants_ParticipantId1");
 
                     b.HasOne("Domain.Entities.Participants", "Participant2")
                         .WithMany()
-                        .HasForeignKey("ParticipantId1")
+                        .HasForeignKey("ParticipantId2")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_Chats_Participants_ParticipantId2");
@@ -126,7 +121,7 @@ namespace Infra.Migrations
             modelBuilder.Entity("Domain.Entities.Messages", b =>
                 {
                     b.HasOne("Domain.Entities.Chats", "Chat")
-                        .WithMany("Messages")
+                        .WithMany("MessagesList")
                         .HasForeignKey("ChatId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
@@ -134,10 +129,10 @@ namespace Infra.Migrations
 
                     b.HasOne("Domain.Entities.Participants", "Participant")
                         .WithMany()
-                        .HasForeignKey("ParticipantId")
+                        .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("FK_Messages_Participants_ParticipantId");
+                        .HasConstraintName("FK_Messages_Participants_SenderId");
 
                     b.Navigation("Chat");
 
@@ -146,7 +141,7 @@ namespace Infra.Migrations
 
             modelBuilder.Entity("Domain.Entities.Chats", b =>
                 {
-                    b.Navigation("Messages");
+                    b.Navigation("MessagesList");
                 });
 #pragma warning restore 612, 618
         }

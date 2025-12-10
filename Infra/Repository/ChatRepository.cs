@@ -1,6 +1,6 @@
 using Domain.Interface;
 using Domain.Entities;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Repository;
 
@@ -26,9 +26,13 @@ public class ChatRepository : IChatRepository
 
     public async Task<Chats?> SearchChatByParticipants(Guid userId1, Guid userId2, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await _infraDbContext.Chats
+            .Where(c =>
+                (c.ParticipantId1 == userId1 && c.ParticipantId2 == userId2) ||
+                (c.ParticipantId1 == userId2 && c.ParticipantId2 == userId1))
+            .FirstOrDefaultAsync(ct);
     }
-
+    
     public async Task<Chats?> GetByIdAsync(Guid chatId, CancellationToken ct = default)
     {
         throw new NotImplementedException();

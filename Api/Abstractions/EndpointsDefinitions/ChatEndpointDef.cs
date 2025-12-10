@@ -26,11 +26,6 @@ public class ChatEndpointDef : IEndpointsDefinitions
             return Results.Ok(post);
         }).RequireAuthorization();
 
-        // app.MapPost("/send", async (string text) =>
-        // {
-        //     var x = new SignalRConnectionHub();
-        //     x.SendMessage("Raphael", text);
-        //     Results.Ok();
-        // });  
+        app.MapGet("/health-check",() => Results.Ok());  
     }
 }

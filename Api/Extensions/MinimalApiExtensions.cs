@@ -22,7 +22,11 @@ public static class MinimalApiExtensions
         serviceCollection.AddDbContext<InfraDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
         
-        serviceCollection.AddSignalR();
+        // serviceCollection.AddSignalR();
+        serviceCollection.AddSignalR(options =>
+        {
+            options.EnableDetailedErrors = true;
+        });
         serviceCollection.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateChatCommand).Assembly));
 
         serviceCollection.AddSingleton<IConnectionManager, SignalConnections>();
