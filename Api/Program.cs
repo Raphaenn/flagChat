@@ -14,6 +14,7 @@ builder.Services.AddJwtAuthentication(secretKey);
 builder.Services.RegisterServices(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddOpenApiDocument(config =>
 {
     config.DocumentName = "TodoAPI";
@@ -34,20 +35,6 @@ builder.Services.AddOpenApiDocument(config =>
 
 var app = builder.Build();
 
-
-app.Use(async (ctx, next) =>
-{
-    try
-    {
-        await next();
-    }
-    catch (Exception e)
-    {
-        ctx.Response.StatusCode = 500;
-        await ctx.Response.WriteAsync("An error ocurred");
-    }
-});
-
 if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
@@ -60,9 +47,10 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// builder.Services.AddSignalRWithJwt();
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
+
 // app.UseRouting(); -- o que é ?
 
 app.UseHttpsRedirection();
