@@ -14,7 +14,6 @@ builder.Services.AddJwtAuthentication(secretKey);
 builder.Services.RegisterServices(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddOpenApiDocument(config =>
 {
     config.DocumentName = "TodoAPI";

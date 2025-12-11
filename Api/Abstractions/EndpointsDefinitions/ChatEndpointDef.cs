@@ -8,6 +8,8 @@ namespace Api.Abstractions.EndpointsDefinitions;
 
 public class ChatEndpointDef : IEndpointsDefinitions
 {
+    private record struct ChatListReq(string UserId); 
+    
     public void RegisterEndpoints(WebApplication app)
     {
         app.MapGet("/health-check",() => Results.Ok());
@@ -30,11 +32,12 @@ public class ChatEndpointDef : IEndpointsDefinitions
         }).RequireAuthorization();
         
         // search chats by user id
-        app.MapPost("/search-chats", async (HttpContext context, IMediator mediator, string userId) =>
+        app.MapPost("/chats/list", async (HttpContext context, IMediator mediator) =>
         {
+            var request = await context.Request.ReadFromJsonAsync<ChatListReq>();
             SearchChatByUserIdQuery query = new SearchChatByUserIdQuery
             {
-                UserId = Guid.Parse(userId)
+                UserId = Guid.Parse(request.UserId)
             };
 
             var chats = await mediator.Send(query);
