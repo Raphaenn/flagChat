@@ -1,7 +1,7 @@
 using Domain.Entities;
 using MediatR;
 
-namespace App.Users.Queries;
+namespace App.Participant.Queries;
 
 public class CreateParticipantQuery : IRequest<Participants>
 {

@@ -1,4 +1,4 @@
-using App.Users.Queries;
+using App.Participant.Queries;
 using Domain.Entities;
 using Domain.Interface;
 using MediatR;

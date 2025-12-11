@@ -1,5 +1,6 @@
 using Domain.Entities;
 using Domain.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infra.Repository;
 
@@ -18,8 +19,9 @@ public class ChatMessageRepository : IChatMessageRepository
         await _infraDbContext.SaveChangesAsync(ct);
     }
 
-    public async Task<List<Messages>> GetLastMessagesAsync(Guid chatId, int limit, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Messages>> GetMessagesByChatId(Guid chatId, int limit, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var msg = await _infraDbContext.Message.Where(m => m.ChatId == chatId).Take(20).ToListAsync(ct);
+        return msg;
     }
 }

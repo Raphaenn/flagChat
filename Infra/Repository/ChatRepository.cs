@@ -37,4 +37,15 @@ public class ChatRepository : IChatRepository
     {
         throw new NotImplementedException();
     }
+
+    public async Task<IReadOnlyList<Chats>?> GetAllChatsByParticipantId(Guid pId, CancellationToken ct)
+    {
+        if (_infraDbContext.Chats != null)
+        {
+            List<Chats> chats = await _infraDbContext.Chats.Where(c => c.ParticipantId1 == pId).ToListAsync(ct);
+            return chats;
+        }
+
+        return null;
+    }
 }

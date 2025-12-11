@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Api.Hubs;
 using App.Chat.Commands;
+using App.Chat.Queries;
 using MediatR;
 
 namespace Api.Abstractions.EndpointsDefinitions;
@@ -9,8 +10,11 @@ public class ChatEndpointDef : IEndpointsDefinitions
 {
     public void RegisterEndpoints(WebApplication app)
     {
+        app.MapGet("/health-check",() => Results.Ok());
+        
         app.MapHub<SignalRConnectionHub>("/chathub").RequireAuthorization();
 
+        // todo - create chat endpoint (ensure security) 
         app.MapPost("/chat/create", async (HttpContext context, IMediator mediator, string user1, string user2) =>
         {
             CreateChatCommand newChatCommand = new CreateChatCommand
@@ -24,7 +28,17 @@ public class ChatEndpointDef : IEndpointsDefinitions
             var post = await mediator.Send(newChatCommand);
             return Results.Ok(post);
         }).RequireAuthorization();
+        
+        // search chats by user id
+        app.MapPost("/search-chats", async (HttpContext context, IMediator mediator, string userId) =>
+        {
+            SearchChatByUserIdQuery query = new SearchChatByUserIdQuery
+            {
+                UserId = Guid.Parse(userId)
+            };
 
-        app.MapGet("/health-check",() => Results.Ok());  
+            var chats = await mediator.Send(query);
+            return Results.Ok(chats);
+        });
     }
 }
