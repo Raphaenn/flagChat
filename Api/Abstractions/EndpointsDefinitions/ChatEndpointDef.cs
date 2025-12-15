@@ -31,7 +31,6 @@ public class ChatEndpointDef : IEndpointsDefinitions
             return Results.Ok(post);
         }).RequireAuthorization();
         
-        // search chats by user id
         app.MapPost("/chats/list", async (HttpContext context, IMediator mediator) =>
         {
             var request = await context.Request.ReadFromJsonAsync<ChatListReq>();
