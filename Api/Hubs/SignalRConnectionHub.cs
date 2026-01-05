@@ -37,6 +37,7 @@ public class SignalRConnectionHub : Hub
     {
         var cancellationToken = Context.ConnectionAborted; // catch cancellationToken
         string? senderId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        Console.WriteLine(senderId);
         
         if (!Guid.TryParse(senderId, out var senderGuid))
             throw new HubException("Invalid sender id");

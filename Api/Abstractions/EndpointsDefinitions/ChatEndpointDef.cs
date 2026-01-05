@@ -21,8 +21,8 @@ public class ChatEndpointDef : IEndpointsDefinitions
         {
             CreateChatCommand newChatCommand = new CreateChatCommand
             {
-                ParticipantId1 = Guid.NewGuid(),
-                ParticipantId2 = Guid.NewGuid(),
+                ParticipantId1 = Guid.Parse(user1),
+                ParticipantId2 = Guid.Parse(user2),
                 Status = "active",
                 CreatedAt = DateTime.Now,
             };
@@ -41,6 +41,11 @@ public class ChatEndpointDef : IEndpointsDefinitions
 
             var chats = await mediator.Send(query);
             return Results.Ok(chats);
+        });
+
+        app.MapPost("/chat/message/recovery", async (HttpContext context) =>
+        {
+            return Results.Ok();
         });
     }
 }

@@ -3,7 +3,6 @@ using App.Interfaces.Chat;
 using App.Interfaces.IQueueService;
 using Domain.Entities;
 using Domain.Interface;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Services;
 
