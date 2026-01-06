@@ -8,7 +8,8 @@ namespace Api.Abstractions.EndpointsDefinitions;
 
 public class ChatEndpointDef : IEndpointsDefinitions
 {
-    private record struct ChatListReq(string UserId); 
+    private record struct ChatListReq(string UserId);
+    private record struct CreateChatReq(string User1, string User2);
     
     public void RegisterEndpoints(WebApplication app)
     {
@@ -17,12 +18,14 @@ public class ChatEndpointDef : IEndpointsDefinitions
         app.MapHub<SignalRConnectionHub>("/chathub").RequireAuthorization();
 
         // todo - create chat endpoint (ensure security) 
-        app.MapPost("/chat/create", async (HttpContext context, IMediator mediator, string user1, string user2) =>
+        app.MapPost("/chat/create", async (HttpContext context, IMediator mediator) =>
         {
+            var data = await context.Request.ReadFromJsonAsync<CreateChatReq>();
+            
             CreateChatCommand newChatCommand = new CreateChatCommand
             {
-                ParticipantId1 = Guid.Parse(user1),
-                ParticipantId2 = Guid.Parse(user2),
+                ParticipantId1 = Guid.Parse(data.User1),
+                ParticipantId2 = Guid.Parse(data.User2),
                 Status = "active",
                 CreatedAt = DateTime.Now,
             };
